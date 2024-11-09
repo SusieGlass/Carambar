@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
+
+
 // Route pour ajouter une nouvelle blague
 router.post('/blagues', (req, res) => {
   console.log('POST /api/blagues reçu');
@@ -26,17 +28,28 @@ router.get('/blagues', (req, res) => {
 });
 
 
-// Route pour consulter une blague spécifique
+
+// Endpoint pour récupérer une blague par ID
 router.get('/blagues/:id', (req, res) => {
   const id = req.params.id;
-  // Logique pour récupérer une blague par ID
-  res.send(`Blague avec l'ID ${id}`);
+  res.json({ id, content: `Blague avec l'ID ${id}` });
 });
 
-// Route pour consulter une blague aléatoire
-router.get('/blagues/random', (req, res) => {
-  // Logique pour récupérer une blague aléatoire
-  res.send('Blague aléatoire');
+
+//Endpoint pour récupérer une blague aléatoire
+router.get('/blagues/random', async (req, res) => {
+  try {
+    const joke = await Joke.findOne({ order: Sequelize.fn('RANDOM') });
+    if (joke) {
+      res.json(joke);
+    } else {
+      res.status(404).json({ message: 'No jokes found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
+
+
 
 module.exports = router;

@@ -21,23 +21,27 @@
   <div class="joke-container" id="jokeContainer">
     <p id="jokeText">Cliquez sur le bouton pour découvrir une blague !</p>
     <button class="btn-yellow joke-button" onclick="fetchJoke()">CLICK FOR FUN!</button>
-
 </div>
 
-<!-- Script pour gérer l'affichage des blagues -->
 <script>
-    function fetchJoke() {
-        // Remplace cet exemple avec un appel à ton endpoint d'API pour obtenir une blague
-        fetch('URL_DE_TA_API/blagues/random')
-            .then(response => response.json())
-            .then(data => {
-                // Met à jour le texte de la blague
-                document.getElementById('jokeText').textContent = data.joke || "Une blague hilarante arrive bientôt !";
-            })
-            .catch(error => {
-                document.getElementById('jokeText').textContent = "Oops ! Impossible de récupérer une blague pour le moment.";
-            });
-    }
+function fetchJoke() {
+    fetch("http://localhost:3000/api/blagues/random")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur HTTP : " + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Assigne la blague reçue à l’élément HTML
+            document.getElementById("jokeText").innerText = data.content;
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération de la blague :", error);
+            document.getElementById("jokeText").innerText = "Erreur lors de la récupération de la blague : " + error.message;
+        });
+}
+
 </script>
 </body>
 </html>
